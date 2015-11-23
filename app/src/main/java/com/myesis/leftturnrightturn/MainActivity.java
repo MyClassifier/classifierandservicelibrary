@@ -24,8 +24,8 @@ public class MainActivity extends Activity {
     private boolean mBound;
     private SensorService mBoundService;
     BroadcastReceiver receiver;
-    Predictor predictor;
-    FrameLayout left;
+    Predictor rPredictor, lPredictor;
+    FrameLayout left, right;
 
 
     @Override
@@ -76,23 +76,24 @@ public class MainActivity extends Activity {
                                 SensorService.class));
 
                         mBound = false;
+                        right.setBackgroundColor(getResources().getColor(R.color.darkgreen));
+                        left.setBackgroundColor(getResources().getColor(R.color.darkred));
                     }
                 }
             }
         });
 
-        predictor = new LogisticPredictor(this, "test.txt");
-
+        rPredictor = new LogisticPredictor(this, "rt1.txt");
+        lPredictor = new LogisticPredictor(this, "lt1.txt");
 
         left = (FrameLayout)findViewById(R.id.lframe);
+        right = (FrameLayout)findViewById(R.id.rframe);
 
     }
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mBoundService = ((SensorService.LocalBinder) service).getService();
-
             mBoundService.setHostingActivityRunning(true);
-
 
         }
 
@@ -108,13 +109,20 @@ public class MainActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             DataSet data = (DataSet) intent.getSerializableExtra(Constants.DATA);
 
-            boolean inCategory = predictor.predict(data);
-
-            if (inCategory){
+            if (lPredictor.predict(data)){
                 left.setBackgroundColor(getResources().getColor(R.color.red));
             }else{
                 left.setBackgroundColor(getResources().getColor(R.color.darkred));
             }
+
+            if (rPredictor.predict(data)){
+                right.setBackgroundColor(getResources().getColor(R.color.green));
+            }else{
+                right.setBackgroundColor(getResources().getColor(R.color.darkgreen));
+            }
+
+
+
         }
     }
 }
