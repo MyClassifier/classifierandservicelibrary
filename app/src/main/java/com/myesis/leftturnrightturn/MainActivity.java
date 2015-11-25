@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.CompoundButton;
@@ -82,9 +83,10 @@ public class MainActivity extends Activity {
                 }
             }
         });
-
-        rPredictor = new LogisticPredictor(this, "rt1.txt");
-        lPredictor = new LogisticPredictor(this, "lt1.txt");
+        String lt = Environment.getExternalStorageDirectory() + "/my_classifier_files/2_lt1/lt1.txt";
+        String rt = Environment.getExternalStorageDirectory() + "/my_classifier_files/3_rt1/rt1.txt";
+        rPredictor = new LogisticPredictor(this, rt, 1);
+        lPredictor = new LogisticPredictor(this, lt, 1);
 
         left = (FrameLayout)findViewById(R.id.lframe);
         right = (FrameLayout)findViewById(R.id.rframe);
